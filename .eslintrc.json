@@ -1,0 +1,46 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json",
+    "tsconfigRootDir": ".",
+    "ecmaFeatures": {"jsx": true},
+    "sourceType": "module"
+  },
+  "env": {
+    "browser": true,
+    "es2021":true
+  },
+  "plugins": ["@typescript-eslint", "prettier"],
+  "extends": [
+    "standard",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:import/typescript",
+    "plugin:prettier/recommended",
+    "plugin:react/recommended",
+    "prettier/@typescript-eslint"
+  ],
+  "settings": {
+    "react": {
+      "pragma": "React",
+      "version": "detect"
+    }
+  },
+  "rules": {
+    "import/named": "off",
+    "import/export": "off",
+    "import/prefer-default-export": "off",
+    "no-unused-expressions": "off",
+    "no-unused-vars": "off",
+    "@typescript-eslint/prefer-interface": "off", 
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-explicit-any":"off",
+    "@typescript-eslint/no-unused-vars": ["error", {"args": "none"}],
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "react/jsx-filename-extension": ["warn", {
+      "extensions": [".jsx", ".tsx"]
+    }],
+    "react/display-name":"off",
+    "react/prop-types": "off",
+    "prettier/prettier":"error"
+  }
+}
