@@ -9,49 +9,6 @@ import { getPostBySlug, getAllPosts } from '../../lib/api'
 import PostTitle from '../../components/post-title'
 import Head from 'next/head'
 import markdownToHtml from '../../lib/markdownToHtml'
-import PostType from '../../types/post'
-
-type Props = {
-  post: PostType
-}
-
-const Post = ({ post }: Props) => {
-  const router = useRouter()
-  if (!router.isFallback && !post?.slug) {
-    return <ErrorPage statusCode={404} />
-  }
-  return (
-    <Layout>
-      <Container>
-        <Header />
-        {router.isFallback ? (
-          <PostTitle>Loading…</PostTitle>
-        ) : (
-          <>
-            <article className="mb-4 min-h-screen">
-              <Head>
-                <title>{post.title}</title>
-                <meta property="og:image" content={post.ogImage.url} />
-              </Head>
-              <PostHeader title={post.title} date={post.date} />
-              <PostBody content={post.content} />
-            </article>
-          </>
-        )}
-        <a
-          target="_blank"
-          href={`https://github.com/honesome/blog/tree/master/_posts/${post.slug}.md`}
-          rel="external noopener"
-          className="underline cursor-pointer"
-        >
-          修正を提案(GitHub)
-        </a>
-      </Container>
-    </Layout>
-  )
-}
-
-export default Post
 
 type Params = {
   params: {

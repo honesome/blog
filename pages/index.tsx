@@ -9,13 +9,13 @@ type Props = {
   allPosts: Post[]
 }
 
-const Index = ({ allPosts }: Props) => {
+const Index: React.VFC<Props> = ({ allPosts }) => {
   return (
     <>
       <Layout>
         <Container>
           <Intro />
-          <div className="grid grid-cols-1 gap-y-10 md:gap-y-10 mb-20">
+          <div className="grid grid-cols-1 gap-y-10 md:gap-y-10 mb-10">
             {allPosts.map((post) => (
               <PostPreview
                 key={post.slug}
@@ -23,6 +23,7 @@ const Index = ({ allPosts }: Props) => {
                 date={post.date}
                 slug={post.slug}
                 excerpt={post.excerpt}
+                tags={post.tags}
               />
             ))}
           </div>
@@ -35,7 +36,7 @@ const Index = ({ allPosts }: Props) => {
 export default Index
 
 export const getStaticProps = async () => {
-  const allPosts = getAllPosts(['title', 'date', 'slug', 'author', 'coverImage', 'excerpt'])
+  const allPosts = getAllPosts(['title', 'date', 'slug', 'excerpt', 'tags'])
 
   return {
     props: { allPosts }
