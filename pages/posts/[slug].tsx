@@ -14,15 +14,17 @@ import PostType from '../../types/post'
 
 type Props = {
   post: PostType
+  morePosts: PostType[]
+  preview?: boolean
 }
 
-const Post = ({ post }: Props) => {
+const Post = ({ post, morePosts, preview }: Props) => {
   const router = useRouter()
   if (!router.isFallback && !post?.slug) {
     return <ErrorPage statusCode={404} />
   }
   return (
-    <Layout>
+    <Layout preview={preview}>
       <Container>
         <Header />
         {router.isFallback ? (
@@ -31,10 +33,17 @@ const Post = ({ post }: Props) => {
           <>
             <article className="mb-32">
               <Head>
-                <title>{post.title}</title>
+                <title>
+                  {post.title} | Next.js Blog Example with {CMS_NAME}
+                </title>
                 <meta property="og:image" content={post.ogImage.url} />
               </Head>
-              <PostHeader title={post.title} date={post.date} />
+              <PostHeader
+                title={post.title}
+                coverImage={post.coverImage}
+                date={post.date}
+                author={post.author}
+              />
               <PostBody content={post.content} />
             </article>
           </>
@@ -53,16 +62,24 @@ type Params = {
 }
 
 export async function getStaticProps({ params }: Params) {
-  const post = getPostBySlug(params.slug, ['title', 'date', 'slug', 'content', 'ogImage'])
+  const post = getPostBySlug(params.slug, [
+    'title',
+    'date',
+    'slug',
+    'author',
+    'content',
+    'ogImage',
+    'coverImage',
+  ])
   const content = await markdownToHtml(post.content || '')
 
   return {
     props: {
       post: {
         ...post,
-        content
-      }
-    }
+        content,
+      },
+    },
   }
 }
 
@@ -73,10 +90,10 @@ export async function getStaticPaths() {
     paths: posts.map((posts) => {
       return {
         params: {
-          slug: posts.slug
-        }
+          slug: posts.slug,
+        },
       }
     }),
-    fallback: false
+    fallback: false,
   }
 }
