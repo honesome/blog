@@ -1,5 +1,4 @@
 module.exports = {
-  darkMode: 'media',
   purge: ['./components/**/*.tsx', './pages/**/*.tsx'],
   theme: {
     extend: {
