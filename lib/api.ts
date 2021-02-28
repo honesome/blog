@@ -1,6 +1,8 @@
+import { Tag } from './tag';
 import fs from 'fs'
 import { join } from 'path'
 import matter from 'gray-matter'
+import PostType from '../types/post';
 
 const postsDirectory = join(process.cwd(), '_posts')
 
@@ -37,10 +39,11 @@ export function getPostBySlug(slug: string, fields: string[] = []) {
   return items
 }
 
-export function getAllPosts(fields: string[] = []) {
+export function getAllPosts(fields: string[] = [], tagId: string = '') {
   const slugs = getPostSlugs()
   const posts = slugs
     .map((slug) => getPostBySlug(slug, fields))
+    .filter((slugs) => slugs.tags.includes(tagId))
     .sort((post1, post2) => (post1.date > post2.date ? -1 : 1))
   return posts
 }

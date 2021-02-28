@@ -1,43 +1,64 @@
-import { useRouter } from 'next/router'
-import ErrorPage from 'next/error'
 import Container from '../../components/container'
-import PostBody from '../../components/post-body'
-import Header from '../../components/header'
-import PostHeader from '../../components/post-header'
 import Layout from '../../components/layout'
-import { getPostBySlug, getAllPosts } from '../../lib/api'
-import PostTitle from '../../components/post-title'
-import Head from 'next/head'
-import markdownToHtml from '../../lib/markdownToHtml'
+import { getAllPosts } from '../../lib/api'
+import Post from '../../types/post'
+import PostPreview from '../../components/post-preview'
+import { tags } from '../../lib/tag'
+import Intro from '../../components/intro'
+import { GetStaticProps, GetStaticPropsContext } from 'next'
 
-type Params = {
-  params: {
-    slug: string
-  }
+type Props = {
+  taggedPosts: Post[]
 }
 
-export async function getStaticProps({ params }: Params) {
-  const post = getPostBySlug(params.slug, ['title', 'date', 'slug', 'content', 'ogImage'])
-  const content = await markdownToHtml(post.content || '')
+const PostListsTagged: React.VFC<Props> = ({ taggedPosts }) => {
+  return (
+    <>
+      <Layout>
+        <Container>
+          <Intro />
+          <div className="grid grid-cols-1 gap-y-10 md:gap-y-10 mb-10">
+            {taggedPosts.map((post) => (
+              <PostPreview
+                key={post.slug}
+                title={post.title}
+                date={post.date}
+                slug={post.slug}
+                excerpt={post.excerpt}
+                tags={post.tags}
+              />
+            ))}
+          </div>
+        </Container>
+      </Layout>
+    </>
+  )
+}
+
+export default PostListsTagged
+
+type Param = {
+  tag: string
+}
+
+export const getStaticProps: GetStaticProps<Items[], Param> = async (context) => {
+  console.log(context)
+  const taggedPosts = getAllPosts(
+    ['title', 'date', 'slug', 'excerpt', 'tags'],
+    context?.params?.tag
+  )
 
   return {
-    props: {
-      post: {
-        ...post,
-        content
-      }
-    }
-  }
+    props: { taggedPosts }
+  } as const
 }
 
 export async function getStaticPaths() {
-  const posts = getAllPosts(['slug'])
-
   return {
-    paths: posts.map((posts) => {
+    paths: tags.map((tag) => {
       return {
         params: {
-          slug: posts.slug
+          tag: tag.id
         }
       }
     }),

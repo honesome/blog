@@ -1,5 +1,3 @@
-import Author from './author'
-
 type PostType = {
   slug: string
   title: string
