@@ -1,32 +1,39 @@
 import Container from '../../components/container'
 import Layout from '../../components/layout'
-import { getAllPosts } from '../../lib/api'
+import { getAllPosts, Items } from '../../lib/api'
 import Post from '../../types/post'
 import PostPreview from '../../components/post-preview'
-import { tags } from '../../lib/tag'
+import { getTagValue, tags } from '../../lib/tag'
 import Intro from '../../components/intro'
 import { GetStaticProps, GetStaticPropsContext } from 'next'
+import TagExplanation from '../../components/tag-explanation'
+import SectionSeparator from '../../components/section-separator'
 
 type Props = {
   taggedPosts: Post[]
+  tagName: string
 }
 
-const PostListsTagged: React.VFC<Props> = ({ taggedPosts }) => {
+const PostListsTagged: React.VFC<Props> = ({ taggedPosts, tagName }) => {
   return (
     <>
       <Layout>
         <Container>
           <Intro />
+          <TagExplanation tagName={tagName} />
           <div className="grid grid-cols-1 gap-y-10 md:gap-y-10 mb-10">
             {taggedPosts.map((post) => (
-              <PostPreview
-                key={post.slug}
-                title={post.title}
-                date={post.date}
-                slug={post.slug}
-                excerpt={post.excerpt}
-                tags={post.tags}
-              />
+              <>
+                <PostPreview
+                  key={post.slug}
+                  title={post.title}
+                  date={post.date}
+                  slug={post.slug}
+                  excerpt={post.excerpt}
+                  tags={post.tags}
+                />
+                <SectionSeparator />
+              </>
             ))}
           </div>
         </Container>
@@ -41,15 +48,15 @@ type Param = {
   tag: string
 }
 
-export const getStaticProps: GetStaticProps<Items[], Param> = async (context) => {
-  console.log(context)
-  const taggedPosts = getAllPosts(
-    ['title', 'date', 'slug', 'excerpt', 'tags'],
-    context?.params?.tag
-  )
+export const getStaticProps: GetStaticProps<Readonly<{ taggedPosts: Items[] }>, Param> = async (
+  context
+) => {
+  const tagId = context?.params?.tag ?? ''
+  const tagName = getTagValue(tagId)
+  const taggedPosts = getAllPosts(['title', 'date', 'slug', 'excerpt', 'tags'], tagId)
 
   return {
-    props: { taggedPosts }
+    props: { taggedPosts, tagName }
   } as const
 }
 

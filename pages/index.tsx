@@ -4,6 +4,7 @@ import Layout from '../components/layout'
 import { getAllPosts } from '../lib/api'
 import Post from '../types/post'
 import PostPreview from '../components/post-preview'
+import SectionSeparator from '../components/section-separator'
 
 type Props = {
   allPosts: Post[]
@@ -17,14 +18,17 @@ const Index: React.VFC<Props> = ({ allPosts }) => {
           <Intro />
           <div className="grid grid-cols-1 gap-y-10 md:gap-y-10 mb-10">
             {allPosts.map((post) => (
-              <PostPreview
-                key={post.slug}
-                title={post.title}
-                date={post.date}
-                slug={post.slug}
-                excerpt={post.excerpt}
-                tags={post.tags}
-              />
+              <>
+                <PostPreview
+                  key={post.slug}
+                  title={post.title}
+                  date={post.date}
+                  slug={post.slug}
+                  excerpt={post.excerpt}
+                  tags={post.tags}
+                />
+                <SectionSeparator />
+              </>
             ))}
           </div>
         </Container>
